@@ -7,8 +7,13 @@ import MenuItem from "./MenuItem";
 
 import useRegisterModal from "@/app/hooks/useRegisterModal";
 import useLoginModal from "@/app/hooks/useLoginModal";
+import { signOut } from "next-auth/react";
+import { SafeUser } from "@/app/types";
 
-const UserMenu = () => {
+interface UserMenuProps {
+  currentUser?: SafeUser | null;
+}
+const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
 
@@ -39,10 +44,23 @@ const UserMenu = () => {
       {isOpen && (
         <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm">
           <div className="flex flex-col cursor-pointer">
-            <>
-              <MenuItem onClick={loginModal.onOpen} label="Login" />
-              <MenuItem label="Sign up" onClick={registerModal.onOpen} />
-            </>
+            {/* if we have current user (user is signed in) display something else. Else display the rest */}
+            {currentUser ? (
+              <>
+                <MenuItem onClick={() => {}} label="My Trips" />
+                <MenuItem label="My Favorites" onClick={() => {}} />
+                <MenuItem label="My Reservations" onClick={() => {}} />
+                <MenuItem label="My Properties" onClick={() => {}} />
+                <MenuItem label="Alibnb my home" onClick={() => {}} />
+                <hr />
+                <MenuItem label="Logout" onClick={() => signOut()} />
+              </>
+            ) : (
+              <>
+                <MenuItem onClick={loginModal.onOpen} label="Login" />
+                <MenuItem label="Sign up" onClick={registerModal.onOpen} />
+              </>
+            )}
           </div>
         </div>
       )}
